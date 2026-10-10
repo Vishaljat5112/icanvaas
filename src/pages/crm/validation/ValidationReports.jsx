@@ -124,6 +124,35 @@ export const ValidationReports = () => {
     window.print();
   };
 
+  const handleExportCSV = () => {
+    const headers = ['Report ID', 'Project', 'Batch ID', 'Circulator', 'Good Sigs', 'Bad Sigs', 'Total', 'Accuracy', 'Status', 'Date'];
+    const rows = reports.map((r) => [
+      r.id,
+      `"${r.project}"`,
+      r.batchId,
+      `"${r.circulator}"`,
+      r.goodSigs,
+      r.badSigs,
+      r.total,
+      r.accuracy,
+      r.status,
+      r.submissionDate
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `validation_reports_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    addToast({
+      title: 'Export Generated',
+      message: `${reports.length} validation reports downloaded as CSV.`,
+      type: 'success'
+    });
+  };
+
   const handleShare = (rep) => {
     const text = `Validation Report ${rep.id} | Batch ${rep.batchId} | Valid: ${rep.goodSigs}/${rep.total} (${rep.accuracy}) | Status: ${rep.status}`;
     if (navigator.clipboard) {
@@ -154,6 +183,13 @@ export const ValidationReports = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={handleExportCSV}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border cursor-pointer"
+              style={{ backgroundColor: 'var(--surface-secondary)', borderColor: 'var(--border)', color: 'var(--text-primary)' }}
+            >
+              <Download className="w-4 h-4 text-info" /> Export CSV
+            </button>
             <button
               onClick={handlePrint}
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border cursor-pointer"

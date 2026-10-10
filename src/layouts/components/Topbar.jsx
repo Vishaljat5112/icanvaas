@@ -385,25 +385,49 @@ export const Topbar = ({ onToggleSidebar, product = 'crm' }) => {
           <button
             type="button"
             onClick={() => navigate('/crm/bestie')}
-            className="hidden-mobile flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all"
+            className="hidden md:inline-flex items-center cursor-pointer transition-all"
             style={{
-              background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%)',
-              border: '1px solid rgba(6, 182, 212, 0.4)',
+              height: '36px',
+              padding: '0 14px',
+              borderRadius: '9999px',
+              display: 'inline-flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: '8px',
+              whiteSpace: 'nowrap',
+              backgroundColor: '#f0f9ff',
+              border: '1.5px solid #38bdf8',
               color: '#0284c7',
+              boxSizing: 'border-box',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = '#0284c7';
-              e.currentTarget.style.boxShadow = '0 0 10px rgba(6, 182, 212, 0.3)';
+              e.currentTarget.style.boxShadow = '0 0 10px rgba(56, 189, 248, 0.3)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(6, 182, 212, 0.4)';
+              e.currentTarget.style.borderColor = '#38bdf8';
               e.currentTarget.style.boxShadow = 'none';
             }}
             title="Ask Bestie AI Agent"
           >
-            <Sparkles size={14} style={{ color: '#0ea5e9' }} />
-            <span>Ask Bestie</span>
-            <span style={{ fontSize: '9px', background: '#0284c7', color: '#fff', padding: '1px 4px', borderRadius: '4px' }}>AI</span>
+            <Sparkles size={16} style={{ color: '#0284c7', flexShrink: 0 }} />
+            <span style={{ fontWeight: 700, fontSize: '14px', color: '#0284c7', lineHeight: 1 }}>Ask Bestie</span>
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                background: '#0284c7',
+                color: '#ffffff',
+                padding: '2px 7px',
+                borderRadius: '9999px',
+                lineHeight: 1,
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              AI
+            </span>
           </button>
         )}
 

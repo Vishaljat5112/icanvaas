@@ -240,6 +240,7 @@ export const UnifiedLogin = ({ mode }) => {
   const [selectedRole, setSelectedRole] = useState(roleList[0]);
   const [email, setEmail] = useState(roleList[0].email);
   const [password, setPassword] = useState(roleList[0].password);
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuperAdminHidden, setIsSuperAdminHidden] = useState(false);
 
@@ -564,7 +565,7 @@ export const UnifiedLogin = ({ mode }) => {
                     }}
                   />
                   <input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -573,7 +574,7 @@ export const UnifiedLogin = ({ mode }) => {
                       width: '100%',
                       height: '38px',
                       paddingLeft: '34px',
-                      paddingRight: '12px',
+                      paddingRight: '36px',
                       borderRadius: '8px',
                       border: '1px solid rgba(56, 189, 248, 0.28)',
                       backgroundColor: 'rgba(30, 41, 59, 0.7)',
@@ -586,6 +587,29 @@ export const UnifiedLogin = ({ mode }) => {
                     onFocus={(e) => { e.target.style.borderColor = '#38bdf8'; }}
                     onBlur={(e) => { e.target.style.borderColor = 'rgba(56, 189, 248, 0.28)'; }}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      background: 'transparent',
+                      border: 'none',
+                      padding: 0,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#94a3b8',
+                      transition: 'color 0.15s ease',
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = '#38bdf8'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
+                    tabIndex={-1}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
                 </div>
               </div>
 

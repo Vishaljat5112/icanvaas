@@ -449,6 +449,36 @@ export const MyCommissions = () => {
     window.print();
   };
 
+  const handleExportCommissionsCSV = () => {
+    const headers = ['Statement ID', 'Project', 'Signatures Gathered', 'Valid Signatures', 'Invalid', 'Rate', 'Base Pay', 'Bonus', 'Total', 'Status', 'Date'];
+    const rows = commissions.map((c) => [
+      c.id,
+      `"${c.project}"`,
+      c.signatures,
+      c.valid,
+      c.invalid,
+      `"${c.rate}"`,
+      `"${c.basePay}"`,
+      `"${c.bonus}"`,
+      `"${c.total}"`,
+      c.status,
+      c.date
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `commission_ledger_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    addToast({
+      title: 'Ledger Exported',
+      message: `${commissions.length} commission statements downloaded as CSV.`,
+      type: 'success'
+    });
+  };
+
   return (
     <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor: 'var(--background)', color: 'var(--text-primary)' }}>
       {/* ---------------------------------------------------- */}
@@ -703,6 +733,14 @@ export const MyCommissions = () => {
               </div>
 
               <div className="flex items-center gap-3">
+                <button
+                  onClick={handleExportCommissionsCSV}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border cursor-pointer"
+                  style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-primary)' }}
+                >
+                  <Download className="w-4 h-4 text-info" /> Export CSV
+                </button>
+
                 <div className="relative">
                   <Search className="w-4 h-4 absolute text-tertiary" style={{ left: 12, top: '50%', transform: 'translateY(-50%)' }} />
                   <input
