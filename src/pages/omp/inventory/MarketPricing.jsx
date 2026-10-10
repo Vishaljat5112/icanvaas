@@ -177,7 +177,7 @@ export const MarketPricing = () => {
             <span>AI Recommended Lot Pricing Strategies</span>
           </h3>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginBottom: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '16px', marginBottom: '20px' }}>
             {strategies.map((strat) => {
               const isSelected = selectedStrategy === strat.id;
 

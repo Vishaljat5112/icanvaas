@@ -621,7 +621,10 @@ html, body, #root, .app-layout, .main-content {
 /* 768px (Tablet Portrait & Large Mobile) */
 @media (min-width: 768px) {
   .visible-mobile { display: none !important; }
-  .hidden-mobile { display: flex !important; flex-direction: column !important; }
+  .hidden-mobile { display: flex !important; }
+  .hidden-mobile.flex-col { flex-direction: column !important; }
+  span.hidden-mobile { display: inline !important; }
+  svg.hidden-mobile { display: inline-block !important; }
   
   .grid-responsive-2col {
     grid-template-columns: repeat(2, 1fr);
@@ -961,4 +964,104 @@ html, body, #root, .app-layout, .main-content {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
+
+/* ====================================================
+   GLOBAL RESPONSIVE MASTER RULES (Mobile, Tablet, Desktop)
+   ==================================================== */
+
+/* Universal Responsive Container Safety */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Portal Login Screen Tablet & Mobile Adaptations */
+@media (max-width: 1024px) {
+  .portal-login-main-container {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .portal-left-panel {
+    grid-column: span 12 / span 12 !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16) !important;
+    padding: 1.5rem 1.25rem !important;
+    width: 100% !important;
+  }
+  .portal-right-panel {
+    grid-column: span 12 / span 12 !important;
+    padding: 1.5rem 1.25rem !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .portal-roles-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .portal-left-panel, .portal-right-panel {
+    padding: 1.25rem 0.875rem !important;
+  }
+  .portal-login-top-bar {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+  }
+}
+
+/* Modals & Dialogs Mobile Ergonomics */
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0.5rem !important;
+    align-items: flex-end !important;
+  }
+  .modal-content {
+    max-height: 94vh !important;
+    border-radius: 16px 16px 0 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .modal-header {
+    padding: 1rem 1.15rem !important;
+  }
+  .modal-body {
+    padding: 1.15rem 1rem !important;
+    max-height: calc(85vh - 120px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .modal-footer {
+    padding: 0.875rem 1rem !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+  .modal-footer button {
+    flex: 1 1 auto !important;
+  }
+}
+
+/* Safe Touch Targets & Inputs for Small Screens (320px - 480px) */
+@media (max-width: 480px) {
+  button, input, select, textarea {
+    min-height: 38px;
+  }
+  .btn-sm {
+    min-height: 32px;
+  }
+  .main-content {
+    padding-left: 0.65rem !important;
+    padding-right: 0.65rem !important;
+    padding-top: 0.75rem !important;
+  }
+}
+
+/* Tables Touch-Scroll Container */
+.table-responsive-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 

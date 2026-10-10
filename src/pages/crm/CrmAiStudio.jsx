@@ -987,7 +987,7 @@ export const CrmAiStudio = () => {
       {/* 5. Main Studio Workspace Section: Production Lab & Studio Canvas */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 380px), 1fr))',
         gap: '22px',
       }}>
         {/* Left Side: Production Lab */}

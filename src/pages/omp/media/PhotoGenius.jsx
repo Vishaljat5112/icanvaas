@@ -111,7 +111,7 @@ export const PhotoGenius = () => {
         </div>
 
         {/* MAIN STUDIO GRID */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', gap: '24px' }}>
           {/* Left: Studio Canvas Preview */}
           <div>
             <div

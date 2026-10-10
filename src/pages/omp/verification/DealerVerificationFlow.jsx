@@ -255,7 +255,7 @@ export const DealerVerificationFlow = () => {
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '20px', marginBottom: '32px' }}>
               {tiers.map((t) => {
                 const isSelected = formData.tier === t.id;
                 return (
@@ -373,7 +373,7 @@ export const DealerVerificationFlow = () => {
             </div>
 
             <div style={{ background: 'var(--surface)', borderRadius: '16px', border: '1px solid var(--border)', padding: '28px', marginBottom: '28px', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '18px', marginBottom: '24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '18px', marginBottom: '24px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
                     Dealership Legal Name *
@@ -455,7 +455,7 @@ export const DealerVerificationFlow = () => {
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '20px', marginBottom: '32px' }}>
               {[
                 { title: 'State Dealer License Certificate *', doc: documents.licenseDoc, status: 'Verified with DMV Records' },
                 { title: 'Garage Liability Insurance (COI) *', doc: documents.insuranceDoc, status: '$1M Coverage Active' },

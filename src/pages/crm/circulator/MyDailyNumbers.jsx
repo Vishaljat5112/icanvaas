@@ -380,7 +380,7 @@ export const MyDailyNumbers = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
           gap: '1rem',
         }}
       >
@@ -535,7 +535,7 @@ export const MyDailyNumbers = () => {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
               gap: '1rem',
             }}
           >
@@ -588,7 +588,7 @@ export const MyDailyNumbers = () => {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
               gap: '1rem',
             }}
           >
@@ -636,7 +636,7 @@ export const MyDailyNumbers = () => {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))',
               gap: '1rem',
             }}
           >

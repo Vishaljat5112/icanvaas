@@ -431,8 +431,20 @@ export const CirculatorDashboard = () => {
                 <Badge variant="primary" size="sm">
                   Circulator • Basic Tier
                 </Badge>
-                <Badge variant="success" size="sm">
-                  <ShieldCheck size={12} className="mr-1" />
+                <Badge
+                  variant="success"
+                  icon={ShieldCheck}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '3px 8px',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    whiteSpace: 'nowrap',
+                    borderRadius: '9999px',
+                  }}
+                >
                   ID Verified
                 </Badge>
               </div>
@@ -555,9 +567,17 @@ export const CirculatorDashboard = () => {
 
           <Button
             variant="outline"
-            icon={DollarSign}
             onClick={() => navigate('/crm/commissions')}
-            style={{ justifyContent: 'center', fontWeight: 600 }}
+            style={{
+              justifyContent: 'center',
+              fontWeight: 600,
+              fontSize: '12px',
+              padding: '0 8px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+            title="My Commissions ($1,245.50)"
           >
             My Commissions ($1,245.50)
           </Button>
@@ -720,7 +740,7 @@ export const CirculatorDashboard = () => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
             gap: '1rem',
           }}
         >
@@ -840,7 +860,7 @@ export const CirculatorDashboard = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(460px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 460px), 1fr))',
           gap: '1.25rem',
         }}
       >

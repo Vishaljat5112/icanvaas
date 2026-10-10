@@ -366,6 +366,7 @@ export const UnifiedLogin = ({ mode }) => {
       >
         {/* Top Header Bar */}
         <div
+          className="portal-login-top-bar"
           style={{
             display: 'flex',
             alignItems: 'center',

@@ -314,7 +314,7 @@ export const Topbar = ({ onToggleSidebar, product = 'crm' }) => {
           </div>
         </div>
 
-        <div className="hidden-mobile">
+        <div>
           <Button
             variant="ghost"
             size="sm"
@@ -379,7 +379,7 @@ export const Topbar = ({ onToggleSidebar, product = 'crm' }) => {
       </div>
 
       {/* Right Actions: Bestie Quick Action, Language Toggle, Notifications, Theme Toggle, User Profile */}
-      <div className="flex items-center gap-1 md:gap-2.5 ml-auto" style={{ marginLeft: 'auto' }}>
+      <div className="flex items-center ml-auto" style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
         {/* Ask Bestie AI Quick Button */}
         {product === 'crm' && (
           <button
@@ -443,7 +443,6 @@ export const Topbar = ({ onToggleSidebar, product = 'crm' }) => {
             backgroundColor: 'var(--surface-secondary)',
             border: '1px solid var(--border)',
             color: 'var(--text-secondary)',
-            display: 'none',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',

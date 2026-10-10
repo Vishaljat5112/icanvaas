@@ -124,7 +124,7 @@ export const VehicleListingDetail = () => {
         </div>
 
         {/* Main Grid: Gallery & Dealer Buy Card */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '28px', marginBottom: '32px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', gap: '28px', marginBottom: '32px' }}>
           {/* LEFT: Photo Gallery & Vehicle Highlights */}
           <div>
             {/* Big Main Image */}

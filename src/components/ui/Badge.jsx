@@ -6,10 +6,11 @@ export const Badge = ({
   variant = 'default', // 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info'
   icon: Icon,
   className = '',
+  ...props
 }) => {
   return (
-    <span className={cx('badge', `badge-${variant}`, className)}>
-      {Icon && <Icon size={12} />}
+    <span className={cx('badge', `badge-${variant}`, className)} {...props}>
+      {Icon && <Icon size={12} className="shrink-0" />}
       <span>{children}</span>
     </span>
   );

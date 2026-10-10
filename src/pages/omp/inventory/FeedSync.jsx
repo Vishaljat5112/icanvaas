@@ -367,7 +367,7 @@ export const FeedSync = () => {
           </div>
 
           {/* DMS Provider Radio / Connectors */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '12px' }}>
             {dmsProviders.map((dms) => {
               const isSelected = activeDms === dms.id;
               return (

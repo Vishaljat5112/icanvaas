@@ -209,7 +209,7 @@ export const VinScanner = () => {
 
         {/* DECODED RESULT & BOOKOUT DATA */}
         {scannedResult && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', gap: '20px' }}>
             {/* Left: Decoded Vehicle Specs */}
             <div
               style={{

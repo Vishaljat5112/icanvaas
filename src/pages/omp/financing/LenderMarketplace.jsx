@@ -177,7 +177,7 @@ export const LenderMarketplace = () => {
           Lender Approval Decision Matrix ({currentApp.lenderOffers.length} Offers Competing)
         </h3>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '1rem' }}>
           {currentApp.lenderOffers.map((offer, idx) => (
             <div
               key={idx}

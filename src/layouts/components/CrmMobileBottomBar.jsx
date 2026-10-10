@@ -151,7 +151,13 @@ export const CrmMobileBottomBar = ({ onOpenDrawer, product = 'crm' }) => {
       {/* 5th Tab: All Tools Drawer Trigger */}
       <button
         type="button"
-        onClick={() => navigate(isCrm ? '/crm/all-tools' : '/oal/borrower/dashboard')}
+        onClick={() => {
+          if (onOpenDrawer) {
+            onOpenDrawer();
+          } else {
+            navigate(isCrm ? '/crm/all-tools' : '/oal/borrower/dashboard');
+          }
+        }}
         style={{
           background: 'transparent',
           border: 'none',
@@ -167,7 +173,7 @@ export const CrmMobileBottomBar = ({ onOpenDrawer, product = 'crm' }) => {
       >
         <Menu size={20} color={location.pathname === '/crm/all-tools' ? '#38bdf8' : 'currentColor'} />
         <span style={{ fontSize: '10.5px', fontWeight: location.pathname === '/crm/all-tools' ? 800 : 600 }}>
-          All Tools
+          Menu
         </span>
       </button>
     </nav>

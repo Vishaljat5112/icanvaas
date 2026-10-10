@@ -361,7 +361,7 @@ export const OmpMarketplace = () => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
             gap: '14px',
             marginBottom: '28px',
           }}
@@ -444,7 +444,7 @@ export const OmpMarketplace = () => {
             <span style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>Sorted by: Proximity & Verified Trust</span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '20px' }}>
             {filteredListings.map((item) => (
               <div
                 key={item.id}

@@ -161,7 +161,7 @@ export const TitleSearch = () => {
             <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 14px', color: 'var(--text-primary)' }}>
               NMVTIS 50-State Title Brand Checklist
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '10px' }}>
               {report.brandAudit.map((b, i) => (
                 <div key={i} style={{ background: 'var(--surface-secondary)', border: '1px solid var(--border)', padding: '10px 14px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12.5px' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>{b.brand}</span>

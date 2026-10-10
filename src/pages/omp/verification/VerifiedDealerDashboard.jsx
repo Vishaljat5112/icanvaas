@@ -239,7 +239,7 @@ export const VerifiedDealerDashboard = () => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 270px), 1fr))', gap: '16px' }}>
             {/* Benefit 1: Click-to-Call Instant Buyer Communication */}
             <div
               style={{
@@ -522,7 +522,7 @@ export const VerifiedDealerDashboard = () => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '18px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '18px' }}>
             {[
               {
                 stock: 'STK-8491',

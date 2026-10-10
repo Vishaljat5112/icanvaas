@@ -62,7 +62,7 @@ export const OalLanding = () => {
             OA
           </div>
           <span className="font-bold text-lg font-display text-primary tracking-tight">OAL Network</span>
-          <Badge variant="success" className="ml-1">Lending Marketplace</Badge>
+          <Badge variant="success" className="ml-1 hidden sm:inline-flex">Lending Marketplace</Badge>
         </div>
 
         <nav className="hidden-mobile flex items-center gap-6 text-sm font-medium text-secondary">
@@ -73,7 +73,7 @@ export const OalLanding = () => {
           <a href="#faq" className="hover:text-primary">FAQ</a>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Button variant="ghost" size="sm" onClick={() => navigate('/oal/login')}>
             Sign In
           </Button>
@@ -83,7 +83,8 @@ export const OalLanding = () => {
             style={{ backgroundColor: 'var(--accent)', borderColor: 'var(--accent)' }}
             onClick={() => navigate('/oal/borrower/signup')}
           >
-            Apply for Funding
+            <span className="hidden sm:inline">Apply for Funding</span>
+            <span className="sm:hidden">Apply</span>
           </Button>
         </div>
       </header>
