@@ -30,7 +30,7 @@ export const CRM_ROLE_CONFIG = {
     badge: 'Campaign Organization',
     defaultRoute: '/crm/projects',
     allowedNavIds: ['project-mgt', 'validation-setup', 'hierarchy-mgt-coord', 'commission-maker-master', 'live-feed-coord', 'messaging-coord', 'hr-recruitment-coord'],
-    allowedRoutes: ['/crm/projects', '/crm/validation-setup', '/crm/hierarchy', '/crm/commission-maker', '/crm/live-feed', '/crm/messaging-pro', '/crm/hr', '/crm/profile'],
+    allowedRoutes: ['/crm/projects', '/crm/validation-setup', '/crm/hierarchy', '/crm/commission-maker', '/crm/live-feed', '/crm/messaging-pro', '/crm/messages', '/crm/message-board', '/crm/compliance', '/crm/compliance-portal', '/crm/commissions', '/crm/my-pay', '/crm/hr', '/crm/profile'],
   },
   sub_coordinator: {
     id: 'sub_coordinator',
@@ -39,7 +39,7 @@ export const CRM_ROLE_CONFIG = {
     badge: 'Field Operations',
     defaultRoute: '/crm/dashboard-sub',
     allowedNavIds: ['dashboard-sub', 'hierarchy-mgt', 'compliance-monitor', 'progress-track', 'commission-adj', 'messaging-sub', 'hr-recruitment-coord'],
-    allowedRoutes: ['/crm/dashboard-sub', '/crm/hierarchy', '/crm/compliance', '/crm/progress', '/crm/commission-adj', '/crm/messaging-sub', '/crm/hr', '/crm/profile'],
+    allowedRoutes: ['/crm/dashboard-sub', '/crm/hierarchy', '/crm/compliance', '/crm/compliance-portal', '/crm/progress', '/crm/commission-adj', '/crm/messaging-sub', '/crm/hr', '/crm/profile'],
   },
   manager: {
     id: 'manager',
@@ -48,7 +48,7 @@ export const CRM_ROLE_CONFIG = {
     badge: 'Circulator Logistics',
     defaultRoute: '/crm/dashboard-pro',
     allowedNavIds: ['dashboard-pro', 'my-team', 'territory', 'commission-maker', 'messaging-pro', 'hr-recruitment-mgr'],
-    allowedRoutes: ['/crm/dashboard-pro', '/crm/team', '/crm/territory', '/crm/commission-maker', '/crm/messaging-pro', '/crm/hr', '/crm/profile'],
+    allowedRoutes: ['/crm/dashboard-pro', '/crm/team', '/crm/territory', '/crm/commission-maker', '/crm/messaging-pro', '/crm/messages', '/crm/message-board', '/crm/commissions', '/crm/my-pay', '/crm/hr', '/crm/profile'],
   },
   circulator: {
     id: 'circulator',
@@ -57,7 +57,7 @@ export const CRM_ROLE_CONFIG = {
     badge: 'Signature Gatherer',
     defaultRoute: '/crm/dashboard',
     allowedNavIds: ['dashboard', 'onboarding', 'tracker', 'commissions', 'messages', 'profile', 'categories'],
-    allowedRoutes: ['/crm/dashboard', '/crm/circulator/dashboard', '/crm/circulator-dashboard', '/crm/onboarding', '/crm/tracker', '/crm/commissions', '/crm/messages', '/crm/profile', '/crm/circulator/profile', '/crm/categories'],
+    allowedRoutes: ['/crm/dashboard', '/crm/circulator/dashboard', '/crm/circulator-dashboard', '/crm/onboarding', '/crm/tracker', '/crm/commissions', '/crm/my-pay', '/crm/pay-portal', '/crm/messages', '/crm/message-board', '/crm/profile', '/crm/circulator/profile', '/crm/categories'],
   },
   validation: {
     id: 'validation',
@@ -66,7 +66,7 @@ export const CRM_ROLE_CONFIG = {
     badge: 'Quality & Compliance',
     defaultRoute: '/crm/validation-queue',
     allowedNavIds: ['validation-queue', 'validation-commissions', 'validation-reports'],
-    allowedRoutes: ['/crm/validation-queue', '/crm/validation-commissions', '/crm/validation-reports', '/crm/profile'],
+    allowedRoutes: ['/crm/validation-queue', '/crm/validation-commissions', '/crm/validation-reports', '/crm/compliance', '/crm/compliance-portal', '/crm/profile'],
   },
   platform_admin: {
     id: 'platform_admin',

@@ -278,7 +278,10 @@ export const AppRoutes = () => {
           <Route path="/crm/onboarding" element={<OnboardingModule />} />
           <Route path="/crm/tracker" element={<ActivityTracker />} />
           <Route path="/crm/commissions" element={<MyCommissions />} />
+          <Route path="/crm/my-pay" element={<MyCommissions />} />
+          <Route path="/crm/pay-portal" element={<MyCommissions />} />
           <Route path="/crm/messages" element={<MessagesAlerts />} />
+          <Route path="/crm/message-board" element={<MessagesAlerts />} />
 
           {/* Team Leader (Pro) */}
           <Route path="/crm/dashboard-pro" element={<ProDashboard />} />
@@ -294,6 +297,7 @@ export const AppRoutes = () => {
           <Route path="/crm/dashboard-sub" element={<SubDashboard />} />
           <Route path="/crm/hierarchy" element={<HierarchyMgt />} />
           <Route path="/crm/compliance" element={<ComplianceMonitor />} />
+          <Route path="/crm/compliance-portal" element={<ComplianceMonitor />} />
           <Route path="/crm/progress" element={<ProgressTrack />} />
           <Route path="/crm/commission-adj" element={<CommissionAdj />} />
           <Route path="/crm/messaging-sub" element={<DirectMessaging />} />
