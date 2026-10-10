@@ -30,13 +30,19 @@ import {
   Network,
   ShieldAlert,
   User,
-  Layers
+  Layers,
+  Calendar,
+  UploadCloud,
+  FileSpreadsheet
 } from 'lucide-react';
 
 export const crmNavigation = [
   // 1_ Basic - Circulators / Signature Gatherers
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/crm/dashboard', section: 'Circulator (Basic)' },
   { id: 'onboarding', label: 'Onboarding & IDs', icon: UserCheck, path: '/crm/onboarding', section: 'Circulator (Basic)' },
+  { id: 'daily-numbers', label: 'My Daily #s', icon: Calendar, path: '/crm/daily-numbers', section: 'Circulator (Basic)' },
+  { id: 'petition-uploads', label: 'Petition Uploads', icon: UploadCloud, path: '/crm/petition-uploads', section: 'Circulator (Basic)' },
+  { id: 'turn-in', label: 'My Turn In', icon: FileSpreadsheet, path: '/crm/turn-in', section: 'Circulator (Basic)' },
   { id: 'tracker', label: 'Activity Tracker', icon: CheckSquare, path: '/crm/tracker', section: 'Circulator (Basic)' },
   { id: 'commissions', label: 'My Commissions', icon: DollarSign, path: '/crm/commissions', section: 'Circulator (Basic)' },
   { id: 'messages', label: 'Messages & Alerts', icon: MessageSquare, path: '/crm/messages', section: 'Circulator (Basic)' },

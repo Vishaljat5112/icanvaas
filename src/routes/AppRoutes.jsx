@@ -79,6 +79,9 @@ import { CirculatorProfile } from '../pages/crm/circulator/CirculatorProfile';
 import { OnboardingModule } from '../pages/crm/circulator/OnboardingModule';
 import { ActivityTracker } from '../pages/crm/circulator/ActivityTracker';
 import { MyCommissions } from '../pages/crm/circulator/MyCommissions';
+import { MyDailyNumbers } from '../pages/crm/circulator/MyDailyNumbers';
+import { PetitionUploads } from '../pages/crm/circulator/PetitionUploads';
+import { MyTurnIn } from '../pages/crm/circulator/MyTurnIn';
 import { ProjectsManager } from '../pages/crm/coordinator/ProjectsManager';
 import { ValidationQueue } from '../pages/crm/validation/ValidationQueue';
 import { ValidationCommissions } from '../pages/crm/validation/ValidationCommissions';
@@ -276,6 +279,10 @@ export const AppRoutes = () => {
           <Route path="/crm/circulator/dashboard" element={<CirculatorDashboard />} />
           <Route path="/crm/circulator-dashboard" element={<CirculatorDashboard />} />
           <Route path="/crm/onboarding" element={<OnboardingModule />} />
+          <Route path="/crm/daily-numbers" element={<MyDailyNumbers />} />
+          <Route path="/crm/petition-uploads" element={<PetitionUploads />} />
+          <Route path="/crm/turn-in" element={<MyTurnIn />} />
+          <Route path="/crm/my-turn-in" element={<MyTurnIn />} />
           <Route path="/crm/tracker" element={<ActivityTracker />} />
           <Route path="/crm/commissions" element={<MyCommissions />} />
           <Route path="/crm/my-pay" element={<MyCommissions />} />

@@ -538,7 +538,7 @@ export const CirculatorDashboard = () => {
           <Button
             variant="secondary"
             icon={FileCheck2}
-            onClick={() => handleOpenTurnInModal('PRJ-101')}
+            onClick={() => navigate('/crm/turn-in')}
             style={{ justifyContent: 'center', fontWeight: 600 }}
           >
             My Turn In (Drop-Off)
@@ -547,7 +547,7 @@ export const CirculatorDashboard = () => {
           <Button
             variant="secondary"
             icon={UploadCloud}
-            onClick={() => setIsUploadModalOpen(true)}
+            onClick={() => navigate('/crm/petition-uploads')}
             style={{ justifyContent: 'center', fontWeight: 600 }}
           >
             Upload Petitions / Scans
@@ -599,7 +599,7 @@ export const CirculatorDashboard = () => {
           icon={CheckSquare}
           iconBg="rgba(14, 165, 233, 0.12)"
           iconColor="#0284c7"
-          onClick={() => handleOpenDailyModal('PRJ-101')}
+          onClick={() => navigate('/crm/daily-numbers')}
         />
 
         {/* Daily Target vs. Actual */}
@@ -967,7 +967,7 @@ export const CirculatorDashboard = () => {
               variant="ghost"
               size="sm"
               iconRight={ChevronRight}
-              onClick={() => navigate('/crm/tracker')}
+              onClick={() => navigate('/crm/daily-numbers')}
             >
               Full Logbook
             </Button>
@@ -1092,9 +1092,9 @@ export const CirculatorDashboard = () => {
               variant="ghost"
               size="sm"
               iconRight={ChevronRight}
-              onClick={() => navigate('/crm/commissions')}
+              onClick={() => navigate('/crm/turn-in')}
             >
-              Payout Statements
+              Full Turn-In Ledger
             </Button>
           </div>
         </Card>
