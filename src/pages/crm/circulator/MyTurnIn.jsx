@@ -41,6 +41,7 @@ import {
 } from '../../../components/ui';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
+import { getActiveTurnInOverride } from '../../../data/petitionCategoriesData';
 
 export const MyTurnIn = () => {
   const navigate = useNavigate();
@@ -49,9 +50,10 @@ export const MyTurnIn = () => {
 
   const userName = crmUser?.name || 'Tanya Sterling';
   const circulatorBadge = 'CIR-88204';
+  const activeOverride = getActiveTurnInOverride();
 
   // Available Active Petitions
-  const availableProjects = [
+  const baseProjects = [
     {
       id: 'PRJ-101',
       title: 'Prop 12 - Clean Energy Ballot Initiative',
@@ -89,6 +91,28 @@ export const MyTurnIn = () => {
     },
   ];
 
+  const availableProjects = React.useMemo(() => {
+    if (activeOverride?.overrideActive && activeOverride?.currentCategoryName) {
+      const match = baseProjects.find(
+        (p) => p.code === activeOverride.currentProjectCode || p.title === activeOverride.currentCategoryName
+      );
+      if (match) {
+        return baseProjects;
+      }
+      return [
+        {
+          id: `PRJ-OVR-${activeOverride.currentCategoryId || 'ACTIVE'}`,
+          title: activeOverride.currentCategoryName,
+          category: 'Manager Override Directive',
+          baseRate: activeOverride.currentPayRate || 3.50,
+          code: activeOverride.currentProjectCode || 'OVR',
+        },
+        ...baseProjects,
+      ];
+    }
+    return baseProjects;
+  }, [activeOverride]);
+
   // Available Receiving Field Managers
   const receivingManagers = [
     { name: 'Leo Fontaine', title: 'District Field Manager (District 4)' },
@@ -107,18 +131,25 @@ export const MyTurnIn = () => {
   ];
 
   // Form State
-  const [formData, setFormData] = useState({
-    projectId: 'PRJ-101',
+  const [formData, setFormData] = useState(() => ({
+    projectId:
+      activeOverride?.overrideActive && activeOverride?.currentCategoryName
+        ? (baseProjects.find(
+            (p) =>
+              p.code === activeOverride.currentProjectCode ||
+              p.title === activeOverride.currentCategoryName
+          )?.id || `PRJ-OVR-${activeOverride.currentCategoryId || 'ACTIVE'}`)
+        : 'PRJ-101',
     sheetsCount: '4',
     signaturesCount: '40',
-    manager: 'Leo Fontaine',
+    manager: activeOverride?.overrideActive && activeOverride?.assignedManager ? activeOverride.assignedManager : 'Leo Fontaine',
     location: 'Downtown District Office (Staging Room B)',
     submissionDate: new Date().toISOString().split('T')[0],
     submissionTime: '11:30',
     sheetSerials: 'Sheets CA-0920 through CA-0923',
     affidavitSigned: true,
     notes: 'All 4 sheets complete with blue-ink circulator affidavit signed. High turnout at midday shift.',
-  });
+  }));
 
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -568,6 +599,41 @@ export const MyTurnIn = () => {
             Chain-of-Custody Manifest
           </Badge>
         </div>
+
+        {/* Manager Category Override Active Banner */}
+        {activeOverride.overrideActive && (
+          <div
+            className="p-3.5 rounded-xl flex items-start justify-between gap-3 mb-3"
+            style={{
+              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              color: 'var(--text-primary)',
+            }}
+          >
+            <div className="flex items-start gap-2.5">
+              <Layers size={18} style={{ color: '#d97706', marginTop: '2px', flexShrink: 0 }} />
+              <div>
+                <div className="flex items-center gap-2">
+                  <span style={{ fontSize: '13px', fontWeight: 800, color: '#d97706' }}>
+                    Team Manager Directive: Category Overridden
+                  </span>
+                  <Badge variant="warning" size="sm">
+                    Assigned by {activeOverride.assignedManager}
+                  </Badge>
+                </div>
+                <p style={{ margin: '2px 0 0 0', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                  Assigned Project: <strong>{activeOverride.currentCategoryName}</strong> ({activeOverride.currentProjectCode}) • Effective: {activeOverride.effectiveDate}
+                </p>
+                <p style={{ margin: '2px 0 0 0', fontSize: '11.5px', color: '#b45309' }}>
+                  <strong>Manager Directive Reason:</strong> {activeOverride.reason}
+                </p>
+              </div>
+            </div>
+            <Badge variant="neutral" size="sm">
+              Demo State
+            </Badge>
+          </div>
+        )}
 
         <form
           onSubmit={(e) => {

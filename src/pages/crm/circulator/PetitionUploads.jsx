@@ -473,6 +473,31 @@ export const PetitionUploads = () => {
         </Card>
       </div>
 
+      {/* Demo State Disclaimer Banner */}
+      <div
+        className="p-3.5 rounded-xl flex items-start justify-between gap-3"
+        style={{
+          backgroundColor: 'rgba(2, 132, 199, 0.08)',
+          border: '1px solid rgba(2, 132, 199, 0.25)',
+          color: 'var(--text-primary)',
+        }}
+      >
+        <div className="flex items-start gap-2.5">
+          <Info size={18} style={{ color: '#0284c7', marginTop: '2px', flexShrink: 0 }} />
+          <div>
+            <span style={{ fontSize: '13px', fontWeight: 800, color: '#0284c7' }}>
+              Simulated Field Digitization & OCR Inspection (Demo State)
+            </span>
+            <p style={{ margin: '2px 0 0 0', fontSize: '12px', color: 'var(--text-secondary)' }}>
+              Selected image and document files generate client-side previews, digital signature count parsing, and audit receipts in local demonstration state. No actual backend server uploads or remote OCR APIs are called.
+            </p>
+          </div>
+        </div>
+        <Badge variant="neutral" size="sm">
+          Demo Mode
+        </Badge>
+      </div>
+
       {/* 3. Multi-File Upload Dropzone & Metadata Form */}
       <Card style={{ padding: '1.5rem' }}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-border">
