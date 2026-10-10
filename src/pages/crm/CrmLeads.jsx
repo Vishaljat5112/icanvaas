@@ -1,0 +1,305 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Target, Plus, Search, Filter as FilterIcon, ArrowRight, ExternalLink, Sparkles } from 'lucide-react';
+import { Breadcrumb, Button, Card, CardBody, Table, TableHeader, TableBody, TableRow, TableCell, Badge, Input, Select, Modal } from '../../components/ui';
+import { useCrm } from '../../context/CrmContext';
+import { useToast } from '../../context/ToastContext';
+import { SHOW_OAL } from '../../config/features';
+
+export const CrmLeads = () => {
+  const navigate = useNavigate();
+  const { leads, addLead } = useCrm();
+  const { addToast } = useToast();
+
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  // Add Lead Modal State
+  const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
+  const [leadFormData, setLeadFormData] = useState({
+    name: '',
+    company: '',
+    email: '',
+    value: '$250,000',
+    score: 85,
+    status: 'New',
+  });
+
+  // Referral Modal State
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [isReferralOpen, setIsReferralOpen] = useState(false);
+
+  const filteredLeads = leads.filter((l) => {
+    const matchSearch = l.name.toLowerCase().includes(search.toLowerCase()) || l.company.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = statusFilter === 'all' || l.status === statusFilter;
+    return matchSearch && matchStatus;
+  });
+
+  const handleCreateLead = (e) => {
+    e.preventDefault();
+    if (!leadFormData.name || !leadFormData.company) {
+      addToast({ title: 'Validation Error', message: 'Name and company name are required.', type: 'error' });
+      return;
+    }
+
+    addLead(leadFormData);
+    addToast({ title: 'Lead Created', message: `Added Commercial Lead: ${leadFormData.company}`, type: 'success' });
+    setIsAddLeadOpen(false);
+    setLeadFormData({ name: '', company: '', email: '', value: '$250,000', score: 85, status: 'New' });
+  };
+
+  const handleOpenReferral = (lead) => {
+    setSelectedLead(lead);
+    setIsReferralOpen(true);
+  };
+
+  const handleExecuteReferral = () => {
+    addToast({
+      title: 'OAL Marketplace Referral Dispatched',
+      message: `Navigating ${selectedLead?.company} to OAL Borrower Registration...`,
+      type: 'success',
+    });
+    setIsReferralOpen(false);
+    navigate(`/oal/borrower/signup?ref=CRM-${selectedLead?.id}`);
+  };
+
+  return (
+    <div className="flex flex-col gap-6" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+      {/* Header */}
+      <div className="page-header-row">
+        <div>
+          <Breadcrumb items={[{ label: 'iCanvass PDM' }, { label: 'Leads Directory' }]} />
+          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0 0 0' }}>
+            Commercial Sales Leads
+          </h1>
+        </div>
+        <div className="header-actions-right">
+          <Button
+            variant="primary"
+            size="sm"
+            icon={Plus}
+            onClick={() => setIsAddLeadOpen(true)}
+          >
+            Add New Lead
+          </Button>
+        </div>
+      </div>
+
+      {/* Filter Bar */}
+      {/* Filter Bar */}
+      <div className="table-toolbar">
+        <div className="table-toolbar-search">
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search leads by contact or company name..."
+            startIcon={Search}
+            style={{ height: '36px' }}
+          />
+        </div>
+
+        <div className="table-toolbar-actions">
+          <Select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            options={[
+              { label: 'All Lead Statuses', value: 'all' },
+              { label: 'New', value: 'New' },
+              { label: 'Contacted', value: 'Contacted' },
+              { label: 'Qualified', value: 'Qualified' },
+              { label: 'Proposal', value: 'Proposal' },
+            ]}
+            style={{ height: '36px', fontSize: '13px' }}
+          />
+        </div>
+      </div>
+
+      {/* Desktop Leads Table */}
+      <Card className="hidden-mobile">
+        <CardBody className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableCell isHeader>Lead ID</TableCell>
+                <TableCell isHeader>Contact Name</TableCell>
+                <TableCell isHeader>Company Entity</TableCell>
+                <TableCell isHeader>Estimated Value</TableCell>
+                <TableCell isHeader>Lead Score</TableCell>
+                <TableCell isHeader>Status</TableCell>
+                {SHOW_OAL && <TableCell isHeader align="right">Actions</TableCell>}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredLeads.map((lead) => (
+                <TableRow key={lead.id}>
+                  <TableCell><span className="font-mono text-xs text-tertiary">{lead.id}</span></TableCell>
+                  <TableCell><span className="font-bold text-xs text-primary">{lead.name}</span></TableCell>
+                  <TableCell><span className="text-xs text-secondary">{lead.company}</span></TableCell>
+                  <TableCell><span className="font-bold text-xs text-success">{lead.value}</span></TableCell>
+                  <TableCell><Badge variant="success">{lead.score} / 100</Badge></TableCell>
+                  <TableCell><Badge variant="primary">{lead.status}</Badge></TableCell>
+                  {SHOW_OAL && (
+                    <TableCell align="right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          icon={Sparkles}
+                          onClick={() => handleOpenReferral(lead)}
+                          title="Refer to OAL Commercial Lending Marketplace"
+                        >
+                          Refer to OAL
+                        </Button>
+                      </div>
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardBody>
+      </Card>
+
+      {/* Mobile Card List View */}
+      <div className="visible-mobile flex flex-col gap-3.5" style={{ width: '100%', boxSizing: 'border-box' }}>
+        {filteredLeads.map((lead) => (
+          <Card
+            key={lead.id}
+            style={{
+              padding: '1rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.75rem',
+              borderRadius: '14px',
+              border: '1px solid var(--border)',
+              backgroundColor: 'var(--surface)',
+              boxShadow: 'var(--shadow-sm)',
+              width: '100%',
+              boxSizing: 'border-box',
+            }}
+          >
+            <div
+              className="flex items-center justify-between pb-2.5 border-b"
+              style={{ borderColor: 'var(--border)' }}
+            >
+              <span className="font-mono text-xs text-tertiary font-semibold">{lead.id}</span>
+              <Badge variant="primary">{lead.status}</Badge>
+            </div>
+            
+            <div className="flex flex-col gap-0.5">
+              <div className="font-bold text-base text-primary">{lead.name}</div>
+              <div className="text-xs text-secondary font-medium">{lead.company}</div>
+            </div>
+
+            <div
+              className="flex items-center justify-between p-2.5 rounded-lg"
+              style={{
+                backgroundColor: 'var(--surface-secondary)',
+                borderRadius: '8px',
+              }}
+            >
+              <span className="font-bold text-success" style={{ fontSize: '14px' }}>{lead.value}</span>
+              <Badge variant="success" style={{ fontSize: '11px', padding: '2px 8px' }}>Score: {lead.score} / 100</Badge>
+            </div>
+
+            {SHOW_OAL && (
+              <div className="pt-1 mt-0.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  icon={Sparkles}
+                  className="w-full justify-center"
+                  onClick={() => handleOpenReferral(lead)}
+                >
+                  Refer to OAL
+                </Button>
+              </div>
+            )}
+          </Card>
+        ))}
+      </div>
+
+      {/* Add Lead Modal */}
+      <Modal
+        isOpen={isAddLeadOpen}
+        onClose={() => setIsAddLeadOpen(false)}
+        title="Add Commercial Lead"
+        footer={
+          <>
+            <Button variant="outline" size="sm" onClick={() => setIsAddLeadOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" size="sm" icon={Plus} onClick={handleCreateLead}>
+              Create Lead
+            </Button>
+          </>
+        }
+      >
+        <form onSubmit={handleCreateLead} className="flex flex-col gap-4">
+          <Input
+            label="Contact Full Name"
+            placeholder="e.g. Jordan Miller"
+            value={leadFormData.name}
+            onChange={(e) => setLeadFormData({ ...leadFormData, name: e.target.value })}
+            required
+          />
+          <Input
+            label="Company Entity"
+            placeholder="e.g. Acme Solar Systems Inc."
+            value={leadFormData.company}
+            onChange={(e) => setLeadFormData({ ...leadFormData, company: e.target.value })}
+            required
+          />
+          <Input
+            label="Corporate Email"
+            type="email"
+            placeholder="e.g. j.miller@acme.com"
+            value={leadFormData.email}
+            onChange={(e) => setLeadFormData({ ...leadFormData, email: e.target.value })}
+          />
+          <Input
+            label="Estimated Deal Value"
+            placeholder="e.g. $250,000"
+            value={leadFormData.value}
+            onChange={(e) => setLeadFormData({ ...leadFormData, value: e.target.value })}
+          />
+          <Select
+            label="Initial Pipeline Status"
+            value={leadFormData.status}
+            onChange={(e) => setLeadFormData({ ...leadFormData, status: e.target.value })}
+            options={['New', 'Contacted', 'Qualified', 'Proposal']}
+          />
+        </form>
+      </Modal>
+
+      {/* OAL Referral Modal */}
+      {SHOW_OAL && (
+        <Modal
+          isOpen={isReferralOpen}
+          onClose={() => setIsReferralOpen(false)}
+          title={`Refer ${selectedLead?.company} to OAL Network Marketplace`}
+        >
+          <div className="flex flex-col gap-4 text-xs">
+            <p className="text-secondary margin-0">
+              This action pre-fills <strong>{selectedLead?.company}</strong> into the OAL Network Borrower Onboarding Gateway for commercial debt line bidding.
+            </p>
+
+            <div className="p-3 surface-secondary rounded-md border-subtle flex flex-col gap-1">
+              <div>Contact: <strong>{selectedLead?.name}</strong> ({selectedLead?.email})</div>
+              <div>Estimated Facility Size: <strong className="text-success">{selectedLead?.value}</strong></div>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-2">
+              <Button variant="outline" size="sm" onClick={() => setIsReferralOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="primary" size="sm" icon={ExternalLink} onClick={handleExecuteReferral} style={{ backgroundColor: 'var(--accent)', borderColor: 'var(--accent)' }}>
+                Launch OAL Borrower Gateway
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+    </div>
+  );
+};
