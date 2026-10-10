@@ -24,7 +24,8 @@ import {
   Percent,
   Check,
   AlertTriangle,
-  Info
+  Info,
+  Edit3
 } from 'lucide-react';
 import { useToast } from '../../../context/ToastContext';
 import { useAuth } from '../../../context/AuthContext';
@@ -164,6 +165,7 @@ export const MyCommissions = () => {
   ]);
 
   const [isPlanMakerModalOpen, setIsPlanMakerModalOpen] = useState(false);
+  const [editingPlanId, setEditingPlanId] = useState(null);
   const [newPlanForm, setNewPlanForm] = useState({
     name: '',
     type: 'Tiered per Valid Signature',
@@ -207,6 +209,7 @@ export const MyCommissions = () => {
   ]);
 
   const [isCreateBonusModalOpen, setIsCreateBonusModalOpen] = useState(false);
+  const [editingBonusId, setEditingBonusId] = useState(null);
   const [newBonusForm, setNewBonusForm] = useState({
     name: '',
     amount: '',
@@ -304,6 +307,30 @@ export const MyCommissions = () => {
   // ----------------------------------------------------
   // HANDLERS
   // ----------------------------------------------------
+  const handleOpenEditPlan = (plan) => {
+    setEditingPlanId(plan.id);
+    setNewPlanForm({
+      name: plan.name,
+      type: plan.type,
+      baseRate: plan.baseRate,
+      bonusThreshold: plan.bonusThreshold,
+      eligibility: plan.eligibility,
+      status: plan.status
+    });
+    setIsPlanMakerModalOpen(true);
+  };
+
+  const handleOpenEditBonus = (bon) => {
+    setEditingBonusId(bon.id);
+    setNewBonusForm({
+      name: bon.name,
+      amount: bon.amount.replace('$', ''),
+      eligibility: bon.eligibility,
+      deadline: bon.deadline
+    });
+    setIsCreateBonusModalOpen(true);
+  };
+
   const handleCreatePlan = (e) => {
     e.preventDefault();
     if (!newPlanForm.name.trim() || !newPlanForm.baseRate.trim()) {
@@ -311,26 +338,49 @@ export const MyCommissions = () => {
       return;
     }
 
-    const created = {
-      id: `PLAN-${commissionPlans.length + 1}`,
-      name: newPlanForm.name.trim(),
-      type: newPlanForm.type,
-      baseRate: newPlanForm.baseRate.trim(),
-      bonusThreshold: newPlanForm.bonusThreshold || 'Standard tier',
-      eligibility: newPlanForm.eligibility || 'All active gatherers',
-      effectiveDate: 'Active',
-      status: 'Active'
-    };
+    if (editingPlanId) {
+      setCommissionPlans((prev) =>
+        prev.map((p) =>
+          p.id === editingPlanId
+            ? {
+                ...p,
+                name: newPlanForm.name.trim(),
+                type: newPlanForm.type,
+                baseRate: newPlanForm.baseRate.trim(),
+                bonusThreshold: newPlanForm.bonusThreshold || 'Standard tier',
+                eligibility: newPlanForm.eligibility || 'All active gatherers'
+              }
+            : p
+        )
+      );
+      addToast({
+        title: 'Commission Plan Updated',
+        message: `Plan "${newPlanForm.name.trim()}" has been updated.`,
+        type: 'success'
+      });
+    } else {
+      const created = {
+        id: `PLAN-${commissionPlans.length + 1}`,
+        name: newPlanForm.name.trim(),
+        type: newPlanForm.type,
+        baseRate: newPlanForm.baseRate.trim(),
+        bonusThreshold: newPlanForm.bonusThreshold || 'Standard tier',
+        eligibility: newPlanForm.eligibility || 'All active gatherers',
+        effectiveDate: 'Active',
+        status: 'Active'
+      };
 
-    setCommissionPlans([...commissionPlans, created]);
+      setCommissionPlans([...commissionPlans, created]);
+      addToast({
+        title: 'Commission Plan Created',
+        message: `Plan "${created.name}" is now available for circulator assignments.`,
+        type: 'success'
+      });
+    }
+
     setIsPlanMakerModalOpen(false);
+    setEditingPlanId(null);
     setNewPlanForm({ name: '', type: 'Tiered per Valid Signature', baseRate: '', bonusThreshold: '', eligibility: '', status: 'Active' });
-
-    addToast({
-      title: 'Commission Plan Created',
-      message: `Plan "${created.name}" is now available for circulator assignments.`,
-      type: 'success'
-    });
   };
 
   const handleCreateBonus = (e) => {
@@ -340,25 +390,49 @@ export const MyCommissions = () => {
       return;
     }
 
-    const created = {
-      id: `BON-${bonuses.length + 1}`,
-      name: newBonusForm.name.trim(),
-      amount: newBonusForm.amount.startsWith('$') ? newBonusForm.amount : `$${newBonusForm.amount}`,
-      eligibility: newBonusForm.eligibility || 'Goal completion',
-      status: 'Active Campaign',
-      deadline: newBonusForm.deadline || 'End of Campaign',
-      progress: '0% completed'
-    };
+    const formattedAmount = newBonusForm.amount.startsWith('$') ? newBonusForm.amount : `$${newBonusForm.amount}`;
 
-    setBonuses([...bonuses, created]);
+    if (editingBonusId) {
+      setBonuses((prev) =>
+        prev.map((b) =>
+          b.id === editingBonusId
+            ? {
+                ...b,
+                name: newBonusForm.name.trim(),
+                amount: formattedAmount,
+                eligibility: newBonusForm.eligibility || 'Goal completion',
+                deadline: newBonusForm.deadline || 'End of Campaign'
+              }
+            : b
+        )
+      );
+      addToast({
+        title: 'Bonus Incentive Updated',
+        message: `Bonus "${newBonusForm.name.trim()}" has been updated.`,
+        type: 'success'
+      });
+    } else {
+      const created = {
+        id: `BON-${bonuses.length + 1}`,
+        name: newBonusForm.name.trim(),
+        amount: formattedAmount,
+        eligibility: newBonusForm.eligibility || 'Goal completion',
+        status: 'Active Campaign',
+        deadline: newBonusForm.deadline || 'End of Campaign',
+        progress: '0% completed'
+      };
+
+      setBonuses([...bonuses, created]);
+      addToast({
+        title: 'Bonus Incentive Published',
+        message: `Bonus "${created.name}" has been configured.`,
+        type: 'success'
+      });
+    }
+
     setIsCreateBonusModalOpen(false);
+    setEditingBonusId(null);
     setNewBonusForm({ name: '', amount: '', eligibility: '', deadline: '' });
-
-    addToast({
-      title: 'Bonus Incentive Published',
-      message: `Bonus "${created.name}" has been configured.`,
-      type: 'success'
-    });
   };
 
   const handleConfirmPayout = (e) => {
@@ -782,14 +856,22 @@ export const MyCommissions = () => {
 
                   <div className="pt-4 flex items-center justify-between text-xs">
                     <span className="text-[11px] text-secondary">{plan.effectiveDate}</span>
-                    <button
-                      onClick={() => {
-                        addToast({ title: 'Plan Active', message: `Plan "${plan.name}" is bound to field operations.`, type: 'info' });
-                      }}
-                      className="text-xs font-bold text-info border-none bg-transparent cursor-pointer"
-                    >
-                      Inspect Rules &rarr;
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => handleOpenEditPlan(plan)}
+                        className="flex items-center gap-1 text-xs font-semibold text-secondary hover:text-primary border-none bg-transparent cursor-pointer"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" /> Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          addToast({ title: 'Plan Active', message: `Plan "${plan.name}" is bound to field operations. Base: ${plan.baseRate}.`, type: 'info' });
+                        }}
+                        className="text-xs font-bold text-info border-none bg-transparent cursor-pointer"
+                      >
+                        Inspect Rules &rarr;
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -844,7 +926,15 @@ export const MyCommissions = () => {
                       <span className="text-secondary">Progress / Standing:</span>
                       <span className="font-bold text-primary">{bon.progress}</span>
                     </div>
-                    <span className="text-[10px] text-tertiary">Deadline: {bon.deadline}</span>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-[10px] text-tertiary">Deadline: {bon.deadline}</span>
+                      <button
+                        onClick={() => handleOpenEditBonus(bon)}
+                        className="flex items-center gap-1 text-[11px] font-semibold text-info border-none bg-transparent cursor-pointer"
+                      >
+                        <Edit3 className="w-3 h-3" /> Edit Bonus
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -1115,7 +1205,10 @@ export const MyCommissions = () => {
       {isPlanMakerModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          onClick={() => setIsPlanMakerModalOpen(false)}
+          onClick={() => {
+            setIsPlanMakerModalOpen(false);
+            setEditingPlanId(null);
+          }}
         >
           <form
             onSubmit={handleCreatePlan}
@@ -1125,11 +1218,14 @@ export const MyCommissions = () => {
           >
             <div className="flex items-center justify-between pb-3 border-b" style={{ borderColor: 'var(--border)' }}>
               <h3 className="text-base font-bold m-0 flex items-center gap-2">
-                <Settings className="w-5 h-5 text-info" /> Create Commission Plan
+                <Settings className="w-5 h-5 text-info" /> {editingPlanId ? 'Edit Commission Plan' : 'Create Commission Plan'}
               </h3>
               <button
                 type="button"
-                onClick={() => setIsPlanMakerModalOpen(false)}
+                onClick={() => {
+                  setIsPlanMakerModalOpen(false);
+                  setEditingPlanId(null);
+                }}
                 className="p-1 rounded-lg text-secondary border-none bg-transparent cursor-pointer"
               >
                 <X className="w-5 h-5" />
@@ -1206,7 +1302,10 @@ export const MyCommissions = () => {
             <div className="flex justify-end gap-2 pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
               <button
                 type="button"
-                onClick={() => setIsPlanMakerModalOpen(false)}
+                onClick={() => {
+                  setIsPlanMakerModalOpen(false);
+                  setEditingPlanId(null);
+                }}
                 className="px-4 py-2 rounded-xl text-xs font-semibold border cursor-pointer"
                 style={{ backgroundColor: 'var(--surface-secondary)', color: 'var(--text-primary)', borderColor: 'var(--border)' }}
               >
@@ -1217,7 +1316,7 @@ export const MyCommissions = () => {
                 className="px-5 py-2 rounded-xl text-xs font-bold border-none shadow-md cursor-pointer"
                 style={{ backgroundColor: 'var(--info)', color: 'var(--text-on-primary)' }}
               >
-                Save Plan
+                {editingPlanId ? 'Update Plan' : 'Save Plan'}
               </button>
             </div>
           </form>
@@ -1230,7 +1329,10 @@ export const MyCommissions = () => {
       {isCreateBonusModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          onClick={() => setIsCreateBonusModalOpen(false)}
+          onClick={() => {
+            setIsCreateBonusModalOpen(false);
+            setEditingBonusId(null);
+          }}
         >
           <form
             onSubmit={handleCreateBonus}
@@ -1240,11 +1342,14 @@ export const MyCommissions = () => {
           >
             <div className="flex items-center justify-between pb-3 border-b" style={{ borderColor: 'var(--border)' }}>
               <h3 className="text-base font-bold m-0 flex items-center gap-2">
-                <Award className="w-5 h-5 text-info" /> Create Bonus Incentive
+                <Award className="w-5 h-5 text-info" /> {editingBonusId ? 'Edit Bonus Incentive' : 'Create Bonus Incentive'}
               </h3>
               <button
                 type="button"
-                onClick={() => setIsCreateBonusModalOpen(false)}
+                onClick={() => {
+                  setIsCreateBonusModalOpen(false);
+                  setEditingBonusId(null);
+                }}
                 className="p-1 rounded-lg text-secondary border-none bg-transparent cursor-pointer"
               >
                 <X className="w-5 h-5" />
@@ -1306,7 +1411,10 @@ export const MyCommissions = () => {
             <div className="flex justify-end gap-2 pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
               <button
                 type="button"
-                onClick={() => setIsCreateBonusModalOpen(false)}
+                onClick={() => {
+                  setIsCreateBonusModalOpen(false);
+                  setEditingBonusId(null);
+                }}
                 className="px-4 py-2 rounded-xl text-xs font-semibold border cursor-pointer"
                 style={{ backgroundColor: 'var(--surface-secondary)', color: 'var(--text-primary)', borderColor: 'var(--border)' }}
               >
@@ -1317,7 +1425,7 @@ export const MyCommissions = () => {
                 className="px-5 py-2 rounded-xl text-xs font-bold border-none shadow-md cursor-pointer"
                 style={{ backgroundColor: 'var(--info)', color: 'var(--text-on-primary)' }}
               >
-                Publish Bonus
+                {editingBonusId ? 'Update Bonus' : 'Publish Bonus'}
               </button>
             </div>
           </form>

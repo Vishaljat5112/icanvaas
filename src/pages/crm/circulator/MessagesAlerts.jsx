@@ -26,7 +26,9 @@ import {
   Lock,
   Unlock,
   ChevronRight,
-  Info
+  Info,
+  Edit3,
+  Paperclip
 } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { useToast } from '../../../context/ToastContext';
@@ -50,6 +52,8 @@ export const MessagesAlerts = () => {
   const [bulletinSearch, setBulletinSearch] = useState('');
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
   const [isCreateAnnouncementOpen, setIsCreateAnnouncementOpen] = useState(false);
+  const [editingAnnouncementId, setEditingAnnouncementId] = useState(null);
+  const [announcementPreviewMode, setAnnouncementPreviewMode] = useState(false);
 
   const [announcements, setAnnouncements] = useState([
     {
@@ -289,32 +293,89 @@ export const MessagesAlerts = () => {
   // HANDLERS
   // ----------------------------------------------------
 
-  // Create Announcement
-  const handlePublishAnnouncement = (e) => {
-    e.preventDefault();
-    if (!newAnnouncement.title.trim() || !newAnnouncement.content.trim()) {
-      addToast({ title: 'Validation Error', message: 'Announcement title and message body are required.', type: 'error' });
+  // Open announcement for editing
+  const handleEditAnnouncement = (ann) => {
+    setEditingAnnouncementId(ann.id);
+    setNewAnnouncement({
+      title: ann.title,
+      category: ann.category,
+      recipients: ann.recipients,
+      content: ann.content,
+      isPinned: ann.isPinned,
+      attachment: ann.attachment,
+      attachmentName: ann.attachmentName || ''
+    });
+    setAnnouncementPreviewMode(false);
+    setIsCreateAnnouncementOpen(true);
+  };
+
+  // Handle image attachment for announcement
+  const handleAnnouncementImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        addToast({ title: 'File Too Large', message: 'Please select an image smaller than 5MB.', type: 'warning' });
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setNewAnnouncement((prev) => ({
+          ...prev,
+          attachment: event.target?.result,
+          attachmentName: file.name
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Save Announcement Draft
+  const handleSaveDraftAnnouncement = () => {
+    if (!newAnnouncement.title.trim()) {
+      addToast({ title: 'Validation Error', message: 'Announcement title is required to save a draft.', type: 'error' });
       return;
     }
 
-    const created = {
-      id: Date.now(),
-      title: newAnnouncement.title.trim(),
-      category: newAnnouncement.category,
-      isPinned: newAnnouncement.isPinned,
-      sender: `${crmUser?.name || 'Authorized Member'} (${crmUser?.role ? crmUser.role.toUpperCase() : 'Management'})`,
-      senderRole: 'Management',
-      date: 'Just now',
-      readTime: '1 min read',
-      content: newAnnouncement.content.trim(),
-      recipients: newAnnouncement.recipients,
-      attachment: newAnnouncement.attachment,
-      attachmentName: newAnnouncement.attachmentName,
-      status: 'Published'
-    };
+    if (editingAnnouncementId) {
+      setAnnouncements((prev) =>
+        prev.map((a) =>
+          a.id === editingAnnouncementId
+            ? {
+                ...a,
+                title: newAnnouncement.title.trim(),
+                category: newAnnouncement.category,
+                isPinned: newAnnouncement.isPinned,
+                content: newAnnouncement.content.trim(),
+                recipients: newAnnouncement.recipients,
+                attachment: newAnnouncement.attachment,
+                attachmentName: newAnnouncement.attachmentName,
+                status: 'Draft'
+              }
+            : a
+        )
+      );
+    } else {
+      const draft = {
+        id: Date.now(),
+        title: newAnnouncement.title.trim(),
+        category: newAnnouncement.category,
+        isPinned: newAnnouncement.isPinned,
+        sender: `${crmUser?.name || 'Authorized Member'} (${crmUser?.role ? crmUser.role.toUpperCase() : 'Management'})`,
+        senderRole: 'Management',
+        date: 'Draft',
+        readTime: 'Draft',
+        content: newAnnouncement.content.trim() || 'Draft in progress...',
+        recipients: newAnnouncement.recipients,
+        attachment: newAnnouncement.attachment,
+        attachmentName: newAnnouncement.attachmentName,
+        status: 'Draft'
+      };
+      setAnnouncements([draft, ...announcements]);
+    }
 
-    setAnnouncements([created, ...announcements]);
     setIsCreateAnnouncementOpen(false);
+    setEditingAnnouncementId(null);
+    setAnnouncementPreviewMode(false);
     setNewAnnouncement({
       title: '',
       category: 'general',
@@ -326,9 +387,79 @@ export const MessagesAlerts = () => {
     });
 
     addToast({
-      title: 'Announcement Published',
-      message: 'New bulletin announcement has been posted to the board.',
-      type: 'success'
+      title: 'Draft Saved',
+      message: 'Announcement has been saved as draft.',
+      type: 'info'
+    });
+  };
+
+  // Create or Update Announcement
+  const handlePublishAnnouncement = (e) => {
+    e.preventDefault();
+    if (!newAnnouncement.title.trim() || !newAnnouncement.content.trim()) {
+      addToast({ title: 'Validation Error', message: 'Announcement title and message body are required.', type: 'error' });
+      return;
+    }
+
+    if (editingAnnouncementId) {
+      setAnnouncements((prev) =>
+        prev.map((a) =>
+          a.id === editingAnnouncementId
+            ? {
+                ...a,
+                title: newAnnouncement.title.trim(),
+                category: newAnnouncement.category,
+                isPinned: newAnnouncement.isPinned,
+                content: newAnnouncement.content.trim(),
+                recipients: newAnnouncement.recipients,
+                attachment: newAnnouncement.attachment,
+                attachmentName: newAnnouncement.attachmentName,
+                status: 'Published'
+              }
+            : a
+        )
+      );
+      addToast({
+        title: 'Announcement Updated',
+        message: 'Existing announcement changes have been published.',
+        type: 'success'
+      });
+    } else {
+      const created = {
+        id: Date.now(),
+        title: newAnnouncement.title.trim(),
+        category: newAnnouncement.category,
+        isPinned: newAnnouncement.isPinned,
+        sender: `${crmUser?.name || 'Authorized Member'} (${crmUser?.role ? crmUser.role.toUpperCase() : 'Management'})`,
+        senderRole: 'Management',
+        date: 'Just now',
+        readTime: '1 min read',
+        content: newAnnouncement.content.trim(),
+        recipients: newAnnouncement.recipients,
+        attachment: newAnnouncement.attachment,
+        attachmentName: newAnnouncement.attachmentName,
+        status: 'Published'
+      };
+
+      setAnnouncements([created, ...announcements]);
+      addToast({
+        title: 'Announcement Published',
+        message: 'New bulletin announcement has been posted to the board.',
+        type: 'success'
+      });
+    }
+
+    setIsCreateAnnouncementOpen(false);
+    setEditingAnnouncementId(null);
+    setAnnouncementPreviewMode(false);
+    setNewAnnouncement({
+      title: '',
+      category: 'general',
+      recipients: 'Entire Team',
+      content: '',
+      isPinned: false,
+      attachment: null,
+      attachmentName: ''
     });
   };
 
@@ -1345,7 +1476,22 @@ export const MessagesAlerts = () => {
               </div>
             )}
 
-            <div className="flex justify-end pt-4" style={{ borderTop: '1px solid var(--border)' }}>
+            <div className="flex justify-between items-center pt-4" style={{ borderTop: '1px solid var(--border)' }}>
+              <div>
+                {hasPostingRights && (
+                  <button
+                    onClick={() => {
+                      const ann = selectedAnnouncement;
+                      setSelectedAnnouncement(null);
+                      handleEditAnnouncement(ann);
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer border"
+                    style={{ backgroundColor: 'var(--surface)', color: 'var(--info)', borderColor: 'var(--border)' }}
+                  >
+                    <Edit3 className="w-3.5 h-3.5" /> Edit Announcement
+                  </button>
+                )}
+              </div>
               <button
                 onClick={() => setSelectedAnnouncement(null)}
                 className="px-5 py-2 rounded-xl text-xs font-bold cursor-pointer"
@@ -1359,12 +1505,15 @@ export const MessagesAlerts = () => {
       )}
 
       {/* ---------------------------------------------------- */}
-      {/* MODAL: CREATE ANNOUNCEMENT */}
+      {/* MODAL: CREATE / EDIT ANNOUNCEMENT */}
       {/* ---------------------------------------------------- */}
       {isCreateAnnouncementOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          onClick={() => setIsCreateAnnouncementOpen(false)}
+          onClick={() => {
+            setIsCreateAnnouncementOpen(false);
+            setEditingAnnouncementId(null);
+          }}
         >
           <form
             onSubmit={handlePublishAnnouncement}
@@ -1374,11 +1523,22 @@ export const MessagesAlerts = () => {
           >
             <div className="flex items-center justify-between pb-3" style={{ borderBottom: '1px solid var(--border)' }}>
               <h2 className="text-lg font-bold m-0 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-                <Plus className="w-5 h-5 text-info" /> Create New Announcement
+                {editingAnnouncementId ? (
+                  <>
+                    <Edit3 className="w-5 h-5 text-info" /> Edit Announcement
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-5 h-5 text-info" /> Create New Announcement
+                  </>
+                )}
               </h2>
               <button
                 type="button"
-                onClick={() => setIsCreateAnnouncementOpen(false)}
+                onClick={() => {
+                  setIsCreateAnnouncementOpen(false);
+                  setEditingAnnouncementId(null);
+                }}
                 className="p-1 rounded-lg text-secondary border-none bg-transparent cursor-pointer"
               >
                 <X className="w-5 h-5" />
@@ -1441,6 +1601,43 @@ export const MessagesAlerts = () => {
               />
             </div>
 
+            {/* Optional Image Attachment */}
+            <div>
+              <label className="block text-xs font-semibold mb-1" style={{ color: 'var(--text-secondary)' }}>
+                Optional Image Attachment
+              </label>
+              {newAnnouncement.attachment ? (
+                <div className="flex items-center justify-between p-2.5 rounded-xl border" style={{ backgroundColor: 'var(--surface-secondary)', borderColor: 'var(--border)' }}>
+                  <div className="flex items-center gap-3">
+                    <img src={newAnnouncement.attachment} alt="Preview" className="w-12 h-12 rounded object-cover" />
+                    <div>
+                      <p className="text-xs font-semibold m-0 truncate max-w-xs">{newAnnouncement.attachmentName || 'Attached Image'}</p>
+                      <span className="text-[10px] text-success">Ready to upload</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setNewAnnouncement((prev) => ({ ...prev, attachment: null, attachmentName: '' }))}
+                    className="p-1.5 rounded-lg text-danger border-none bg-transparent cursor-pointer hover:bg-danger/10"
+                    title="Remove attachment"
+                  >
+                    <Trash2 className="w-4 h-4 text-red-500" />
+                  </button>
+                </div>
+              ) : (
+                <label className="flex items-center justify-center gap-2 p-3 rounded-xl border border-dashed cursor-pointer text-xs" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--surface-secondary)' }}>
+                  <Paperclip className="w-4 h-4 text-secondary" />
+                  <span className="text-secondary">Attach flyer or image (PNG, JPG under 5MB)</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAnnouncementImageChange}
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
+
             <label className="flex items-center gap-2 cursor-pointer text-xs">
               <input
                 type="checkbox"
@@ -1451,22 +1648,36 @@ export const MessagesAlerts = () => {
               <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>Pin to top of bulletin board</span>
             </label>
 
-            <div className="flex justify-end gap-3 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
+            <div className="flex items-center justify-between pt-3" style={{ borderTop: '1px solid var(--border)' }}>
               <button
                 type="button"
-                onClick={() => setIsCreateAnnouncementOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer border"
-                style={{ backgroundColor: 'var(--surface-secondary)', color: 'var(--text-primary)', borderColor: 'var(--border)' }}
+                onClick={handleSaveDraftAnnouncement}
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer border"
+                style={{ backgroundColor: 'var(--surface-secondary)', color: 'var(--text-secondary)', borderColor: 'var(--border)' }}
               >
-                Cancel
+                Save Draft
               </button>
-              <button
-                type="submit"
-                className="px-5 py-2 rounded-xl text-xs font-bold cursor-pointer border-none shadow-md"
-                style={{ backgroundColor: 'var(--info)', color: 'var(--text-on-primary)' }}
-              >
-                Publish Announcement
-              </button>
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsCreateAnnouncementOpen(false);
+                    setEditingAnnouncementId(null);
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer border"
+                  style={{ backgroundColor: 'var(--surface-secondary)', color: 'var(--text-primary)', borderColor: 'var(--border)' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl text-xs font-bold cursor-pointer border-none shadow-md"
+                  style={{ backgroundColor: 'var(--info)', color: 'var(--text-on-primary)' }}
+                >
+                  {editingAnnouncementId ? 'Update & Publish' : 'Publish Announcement'}
+                </button>
+              </div>
             </div>
           </form>
         </div>
